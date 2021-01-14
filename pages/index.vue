@@ -7,7 +7,7 @@
 
 <script>
 import Chat from "@/components/chat.vue";
-import Contacts from "@/components/Contacts.vue";
+import Contacts from "@/components/contacts.vue";
 import { mapMutations } from "vuex";
 
 export default {

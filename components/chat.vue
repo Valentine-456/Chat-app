@@ -1,6 +1,6 @@
 <template>
   <div class="chat">
-    <div class="chat-preview">
+    <div v-if="companion" class="chat-preview">
       <div
         class="preview-photo"
         :style="`background-image: url(${companion ? companion.photo: 'photo'})`"
@@ -10,20 +10,66 @@
         <span>{{companion ? companion.description: ''}}</span>
       </div>
     </div>
-    <div class="chat-messages"></div>
+    <div class="chat-preview chat-preview-none" v-else>
+      <h1>Start chating...</h1>
+    </div>
+    <div class="chat-messages">
+      <Message
+        v-for="(m, i) in shownMessages"
+        :key="i"
+        :time="m.time"
+        :userId="m.id"
+        :text="m.text"
+        :name="m.name"
+      />
+      <!-- <Message time="10:45" :userId="id" text="Hallo, mein Freund!!!" name="Ivan Yurchenko" /> -->
+    </div>
     <div class="chat-form">
-      <input type="text" placeholder="Start chating!" class="form-input" />
-      <button class="form-submit">Send message</button>
+      <input
+        type="text"
+        placeholder="Start chating!"
+        @keydown.enter="submitMessage()"
+        class="form-input"
+        v-model="messageInput"
+      />
+      <button class="form-submit" @click="submitMessage()">Send message</button>
     </div>
   </div>
 </template>
 <script>
 import { mapState } from "vuex";
+import Message from "@/components/message.vue";
 
 export default {
   name: "Chat",
+  data: () => ({
+    messageInput: ""
+  }),
+  components: { Message },
   computed: {
-    ...mapState(["companion"])
+    ...mapState(["companion", "user", "messages"]),
+    id() {
+      return this.user.id;
+      console.log(this.user.id);
+    },
+    shownMessages() {
+      return this.messages.filter(
+        m => m.id === this.companion.id || m.to === this.companion.id
+      );
+    }
+  },
+  methods: {
+    submitMessage() {
+      if (/\S/.test(this.messageInput)) {
+        this.$socket.emit("sendMessage", {
+          text: this.messageInput,
+          name: this.user.name,
+          to: this.companion.id
+        });
+      }
+      this.messageInput = "";
+      return;
+    }
   }
 };
 </script>
@@ -44,6 +90,11 @@ export default {
   width: 100%;
   height: 170px;
   background: #becbd9;
+}
+
+.chat-preview-none {
+  justify-content: center;
+  align-items: center;
 }
 
 .preview-photo {
@@ -76,6 +127,7 @@ export default {
   width: calc(100% - 20px);
   overflow-y: auto;
   flex-grow: 2;
+  padding: 0 20px;
 }
 
 .chat-form {

@@ -8,7 +8,7 @@
       <div
         v-for="(user) in shownUsers"
         :key="user.id"
-        @click="SET_COMPANION(user.id)"
+        @click="chooseRoom(user.id)"
         class="contacts-user"
       >
         <div class="avatar" :style="`background-image: url(${user.photo})`">
@@ -21,7 +21,7 @@
       </div>
     </div>
     <div class="contacts-search">
-      <input class="search" type="text" placeholder="Search..." />
+      <input class="search" type="text" placeholder="Search..." v-model="nameInput" />
     </div>
   </div>
 </template>
@@ -31,15 +31,33 @@ import { mapState, mapMutations } from "vuex";
 export default {
   name: "Contacts",
   data: () => ({
-    showOnline: false
+    showOnline: false,
+    nameInput: "",
+    chosenUsers: []
   }),
   computed: {
-    ...mapState(["users"]),
-    shownUsers() {
-      if (this.showOnline) return this.users.filter(u => u.online);
-      return this.users;
+    ...mapState(["user", "users"]),
+    shownUsers: {
+      get() {
+        if (this.showOnline) return this.users.filter(u => u.online);
+        return this.users;
+      },
+      set(val) {
+        // this.chosenUsers = val;
+        // return val;
+      }
     }
   },
+  watch: {
+    nameInput: function(val) {
+      if (!val) {
+        this.shownUsers = this.users.filter(u => u);
+      } else {
+        this.shownUsers = this.users.filter(u => u.name.includes(val));
+      }
+    }
+  },
+
   methods: {
     ...mapMutations(["SET_COMPANION"]),
     toggleUsers(type) {
@@ -61,6 +79,17 @@ export default {
           .querySelectorAll(".contacts-tabs .tab")[0]
           .classList.remove("active");
       }
+    },
+    chooseRoom(id) {
+      this.SET_COMPANION(id);
+      let roomId = Date.now();
+      let companionId = id;
+      // if (this.user.id > id) {
+      //   roomId = `${this.user.id}-${id}`;
+      // } else {
+      //   roomId = `${id}-${this.user.id}`;
+      // }
+      this.$socket.emit("chooseChat", { roomId, companionId }, data => {});
     }
   }
 };
@@ -168,7 +197,6 @@ export default {
   width: calc(100% - 30px);
   height: 30px;
   margin: 30px 15px;
-  font-size: 18px;
   border: 1px solid grey;
   border-radius: 3px;
 }

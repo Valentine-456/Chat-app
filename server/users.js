@@ -32,10 +32,10 @@ module.exports = [
   },
   {
     name: "Offline user",
-    id: "offline",
+    id: "OFFLINE",
     description: "Hi, I am offline!!! Let's talk...",
     photo:
-    "https://www.minervastrategies.com/wp-content/uploads/2016/03/default-avatar.jpg",
-    online: false,
+      "https://www.minervastrategies.com/wp-content/uploads/2016/03/default-avatar.jpg",
+    online: false
   }
 ];
