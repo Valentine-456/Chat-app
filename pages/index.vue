@@ -22,12 +22,12 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(["SET_USER", "SET_COMPANION"]),
+    ...mapMutations(["SET_USER", "PRESET_COMPANION"]),
     join() {
+      
       this.$socket.emit("userJoined", null, data => {
-        if (typeof data === "String") console.error(data);
-        else this.SET_USER(data);
-        this.SET_COMPANION(data);
+        this.SET_USER(data);
+        this.PRESET_COMPANION(data);
       });
     }
   }

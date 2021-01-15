@@ -53,6 +53,9 @@ export default {
       console.log(this.user.id);
     },
     shownMessages() {
+      if (this.companion === this.user)
+        return this.messages.filter(m => m.id === this.companion.id);
+
       return this.messages.filter(
         m => m.id === this.companion.id || m.to === this.companion.id
       );

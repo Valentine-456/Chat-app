@@ -9,6 +9,9 @@ export const mutations = {
   SET_USER(state, data) {
     state.user = data;
   },
+  PRESET_COMPANION(state, data) {
+    state.companion = data;
+  },
   SET_COMPANION(state, data) {
     const companion = state.users.find(u => u.id === data);
     state.companion = companion;
@@ -21,4 +24,3 @@ export const mutations = {
     state.users = users;
   }
 };
-
