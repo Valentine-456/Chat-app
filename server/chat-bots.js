@@ -16,13 +16,6 @@ exports.echoBot = (text, socket) => {
 };
 
 exports.reverseBot = (text, socket) => {
-  //   message.id = "REVERSE_BOT";
-  //   message.name = "Reverse bot";
-  //   let text = message.text
-  //     .split("")
-  //     .reverse()
-  //     .join("");
-
   const message = formMessage(
     "Reverse bot",
     text
@@ -32,14 +25,43 @@ exports.reverseBot = (text, socket) => {
     "REVERSE_BOT",
     socket.id
   );
-  console.log(message);
 
   setTimeout(() => socket.emit("newMessage", message), 3000);
 };
 
-// exports.reverseBot = (text, socket) => {
-//   message.id = "SPAM_BOT";
-//   message.text = message.text;
+exports.spamBot = (text, socket) => {
+  // message.id = "SPAM_BOT";
+  // message.text = message.text;
+  let spamText = "SPAM!!!";
 
-//   setTimeout(() => socket.emit("newMessage", message), 3000);
-// };
+  const message = formMessage("Spam bot", spamText, "SPAM_BOT", socket.id);
+
+  setTimeout(() => {
+    socket.emit("newMessage", message);
+    setTimeout(() => {
+      socket.emit("newMessage", message);
+      setTimeout(() => {
+        socket.emit("newMessage", message);
+        setTimeout(() => {
+          socket.emit("newMessage", message);
+        }, Math.floor(Math.random() * 120000));
+      }, Math.floor(Math.random() * 120000));
+    }, Math.floor(Math.random() * 120000));
+  }, Math.floor(Math.random() * 120000));
+  // setTimeout(
+  //   () => socket.emit("newMessage", message),
+  //   Math.floor(Math.random() * 120000)
+  // );
+  // setTimeout(
+  //   () => socket.emit("newMessage", message),
+  //   Math.floor(Math.random() * 120000)
+  // );
+  // setTimeout(
+  //   () => socket.emit("newMessage", message),
+  //   Math.floor(Math.random() * 120000)
+  // );
+  // setTimeout(
+  //   () => socket.emit("newMessage", message),
+  //   Math.floor(Math.random() * 120000)
+  // );
+};

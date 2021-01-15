@@ -60,6 +60,10 @@ export default {
   },
   methods: {
     submitMessage() {
+      if (!this.companion) {
+        this.messageInput = "";
+        return;
+      }
       if (/\S/.test(this.messageInput)) {
         this.$socket.emit("sendMessage", {
           text: this.messageInput,
@@ -90,6 +94,7 @@ export default {
   width: 100%;
   height: 170px;
   background: #becbd9;
+  overflow: hidden;
 }
 
 .chat-preview-none {
@@ -119,6 +124,7 @@ export default {
 
 .preview-text span {
   font-size: 0.9rem;
+  overflow: auto;
 }
 
 .chat-messages {
@@ -161,5 +167,36 @@ export default {
   justify-content: center;
   margin: 10px;
   width: 200px;
+}
+
+@media screen and (max-width: 750px) {
+  .chat {
+    min-width: 100vw;
+    flex-grow: 2;
+  }
+
+  .chat-preview {
+    width: 100%;
+    height: 150px;
+    background: #becbd9;
+    overflow: hidden;
+  }
+
+  .preview-photo {
+    width: 150px;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .preview-text {
+    margin: 0 5px;
+    flex-grow: 2;
+  }
+
+  .preview-text h2 {
+    margin: 0;
+  }
 }
 </style>

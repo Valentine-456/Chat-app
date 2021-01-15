@@ -2,7 +2,7 @@ const app = require("express")();
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
 let users = require("./users");
-const { echoBot, reverseBot } = require("./chat-bots");
+const { echoBot, reverseBot, spamBot } = require("./chat-bots");
 
 const formMessage = (name, text, id, to) => ({
   //id = from
@@ -17,11 +17,12 @@ const formMessage = (name, text, id, to) => ({
 io.on("connection", socket => {
   socket.on("userJoined", (data, cb) => {
     const user = {
-      name: `User`,
+      name: `User-${Math.floor(Math.random() * 1000000)}`,
       id: socket.id,
       photo:
         "https://www.minervastrategies.com/wp-content/uploads/2016/03/default-avatar.jpg",
-      description: "",
+      description:
+        "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iure dolorum hic eaque. Quasi sint deleniti ea rem reiciendis laboriosam sunt neque quidem quisquam esse, nemo, maiores optio doloremque, ut soluta.",
       online: true
     };
     users.push(user);
@@ -30,35 +31,6 @@ io.on("connection", socket => {
 
     socket.broadcast.emit("allUsers", users);
   });
-
-  // socket.on("chooseChat", (data, cb) => {
-  //   // const { name, to, text } = data;
-  //   // let companionSocket;
-  //   // if (
-  //   //   to !== "REVERSE_BOT" &&
-  //   //   to !== "ECHO_BOT" &&
-  //   //   to !== "SPAM_BOT" &&
-  //   //   to !== "IGNORE_BOT" &&
-  //   //   to !== "OFFLINE"
-  //   // ) {
-  //   //   companionSocket = io.of("/").sockets[to];
-  //   // }
-  //   // socket.join(data.roomId);
-  //   // let companionId = data.companionId;
-  //   // if (
-  //   //   companionId == "REVERSE_BOT" ||
-  //   //   companionId == "ECHO_BOT" ||
-  //   //   companionId == "SPAM_BOT" ||
-  //   //   companionId == "IGNORE_BOT" ||
-  //   //   companionId == "OFFLINE"
-  //   // ) {
-  //   // } else {
-  //   //   io.of("/").sockets[companionId].join(data.roomId);
-  //   //   // console.log(io.of("/").sockets[companionId].rooms);
-  //   // }
-  //   // // socket.to(data.roomId).emit("newMessage", "You have joined the chat!!!");
-  //   // // socket.to(data.roomId).emit("newMessage", "jfdhsgf");
-  // });
 
   socket.on("sendMessage", (data, cb) => {
     const { name, to, text } = data;
@@ -83,6 +55,9 @@ io.on("connection", socket => {
           break;
         case "REVERSE_BOT":
           reverseBot(text, socket);
+          break;
+        case "SPAM_BOT":
+          spamBot(text, socket);
           break;
         case "IGNORE_BOT":
           break;

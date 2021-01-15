@@ -41,5 +41,7 @@ main {
   height: 590px;
   margin: auto;
   display: flex;
+  overflow: hidden;
+  position: relative;
 }
 </style>

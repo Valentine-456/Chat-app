@@ -98,4 +98,15 @@ export default {
   right: -15px;
   clip-path: polygon(0 0, 100% 50%, 0 100%);
 }
+
+@media screen and (max-width: 750px) {
+  .message {
+    width: 90%;
+    margin-bottom: 15px;
+  }
+
+  .message-info {
+    padding: 0 10px;
+  }
+}
 </style>

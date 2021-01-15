@@ -37,6 +37,7 @@ export default {
   }),
   computed: {
     ...mapState(["user", "users"]),
+    ...mapState("frontend", ["isMenuOpened"]),
     shownUsers: {
       get() {
         if (this.showOnline) return this.users.filter(u => u.online);
@@ -55,11 +56,20 @@ export default {
       } else {
         this.shownUsers = this.users.filter(u => u.name.includes(val));
       }
+    },
+    isMenuOpened: function(bool) {
+      if (bool) {
+        document.querySelector(".contacts").classList.add("contacts-opened");
+      }
+      if (!bool) {
+        document.querySelector(".contacts").classList.remove("contacts-opened");
+      }
     }
   },
 
   methods: {
     ...mapMutations(["SET_COMPANION"]),
+    ...mapMutations("frontend", ["TOGGLE_MENU"]),
     toggleUsers(type) {
       if (type == "online") {
         this.showOnline = true;
@@ -82,14 +92,7 @@ export default {
     },
     chooseRoom(id) {
       this.SET_COMPANION(id);
-      let roomId = Date.now();
-      let companionId = id;
-      // if (this.user.id > id) {
-      //   roomId = `${this.user.id}-${id}`;
-      // } else {
-      //   roomId = `${id}-${this.user.id}`;
-      // }
-      this.$socket.emit("chooseChat", { roomId, companionId }, data => {});
+      this.TOGGLE_MENU();
     }
   }
 };
@@ -143,9 +146,10 @@ export default {
 
 .contacts-user {
   width: 100%;
-  height: 60px;
+  height: 70px;
   align-items: center;
   margin: 5px 0;
+  overflow: hidden;
 }
 
 .contacts-user.chosen {
@@ -203,5 +207,21 @@ export default {
 
 .search:focus {
   outline: none;
+}
+
+@media screen and (max-width: 750px) {
+  .contacts {
+    transform: translateX(100%);
+    position: absolute;
+    transition: all 0.2s ease;
+    z-index: 1000;
+    right: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  .contacts.contacts-opened {
+    transform: none;
+  }
 }
 </style>
